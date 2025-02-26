@@ -1,0 +1,82 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    background-color: #000;
+}
+
+#container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-image: url('mountain.jpg');
+    background-size: cover;
+    background-position: center;
+    /* Add a blue overlay to give water feel */
+    /* background-color: rgba(0, 30, 60, 0.3); */
+    background-blend-mode: multiply;
+}
+
+/* UI Container styling */
+#ui-container {
+    /* background: rgba(0, 0, 0, 0.3); */
+    padding: 20px;
+    border-radius: 8px;
+    /* backdrop-filter: blur(5px); */
+}
+
+/* Remove old tape player styles and add new reel styles */
+.reel-container {
+    /* background: rgba(0, 0, 0, 0.3); */
+    border-radius: 50%;
+    /* box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); */
+}
+
+.reel {
+    transition: transform 0.1s linear;
+}
+
+.reel:hover {
+    /* box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); */
+}
+
+.spoke {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Volume sliders styling */
+.slider {
+    /* background: rgba(0, 0, 0, 0.5); */
+    /* box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); */
+}
+
+.slider-handle {
+    /* box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); */
+}
+
+/* Update slider unit styling */
+.slider-unit {
+    margin: 0 10px;
+}
+
+/* Make sure UI elements are above the ripple effect */
+#ui-container, .slider-container {
+    z-index: 1000;
+}
+
+/* Add glow effect to UI elements */
+.slider {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+canvas {
+    display: block;
+    opacity: 1; /* Changed from 0.3 to 1 for full visibility */
+}

@@ -1,0 +1,14 @@
+{
+  "name": "ambient-ripples",
+  "version": "1.0.0",
+  "description": "An ambient experience with water visualization and audio",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.173.0"
+  }
+}
