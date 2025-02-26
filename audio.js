@@ -38,7 +38,7 @@ async function initializeAudioLoops() {
     for (let i = 0; i < NUM_LOOPS; i++) {
         const loopNumber = i + 1;
         try {
-            const response = await fetch(`loop${loopNumber}.wav`);
+            const response = await fetch(`loop${loopNumber}.mp3`);
             const arrayBuffer = await response.arrayBuffer();
             const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
             
