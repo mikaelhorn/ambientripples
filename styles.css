@@ -80,3 +80,27 @@ canvas {
     display: block;
     opacity: 1; /* Changed from 0.3 to 1 for full visibility */
 }
+
+/* Speed Switch Styles */
+.speed-switch-container {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.speed-switch {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.speed-switch:hover {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.switch-handle {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.speed-label {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    font-weight: bold;
+}

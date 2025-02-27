@@ -58,7 +58,8 @@ async function initializeAudioLoops() {
             audioLoops[i] = {
                 source,
                 gainNode,
-                playing: false
+                playing: false,
+                halfSpeed: false
             };
             
             // Start the loop (it will be silent until gain is adjusted)
@@ -78,6 +79,40 @@ function updateLoopVolume(index, volume) {
         // Smooth volume transition
         const gainNode = audioLoops[index].gainNode;
         gainNode.gain.setTargetAtTime(volume, audioContext.currentTime, 0.1);
+    }
+}
+
+// Function to update playback speed
+function updateLoopSpeed(index, halfSpeed) {
+    if (audioLoops[index] && audioLoops[index].source) {
+        const source = audioLoops[index].source;
+        const currentGain = audioLoops[index].gainNode.gain.value;
+        const wasPlaying = currentGain > 0;
+        
+        // Store the half speed state
+        audioLoops[index].halfSpeed = halfSpeed;
+        
+        // Create new source with updated playback rate
+        const newSource = audioContext.createBufferSource();
+        newSource.buffer = source.buffer;
+        newSource.loop = true;
+        
+        // Set playback rate (0.5 for half speed, 1 for normal)
+        newSource.playbackRate.value = halfSpeed ? 0.5 : 1;
+        
+        // Connect new source
+        newSource.connect(audioLoops[index].gainNode);
+        
+        // Start the new source
+        newSource.start(0);
+        
+        // Stop the old source
+        source.stop();
+        
+        // Update the source reference
+        audioLoops[index].source = newSource;
+        
+        console.log(`Loop ${index + 1} speed set to ${halfSpeed ? 'half' : 'normal'}`);
     }
 }
 
@@ -103,4 +138,5 @@ document.addEventListener('DOMContentLoaded', () => {
 // Make functions available globally
 window.initAudio = initAudio;
 window.updateLoopVolume = updateLoopVolume;
+window.updateLoopSpeed = updateLoopSpeed;
 window.getAudioData = getAudioData;

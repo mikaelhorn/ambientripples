@@ -85,6 +85,84 @@ $(document).ready(function() {
         reelContainer.append(reel);
         return reelContainer;
     }
+    
+    // Function to create a speed switch
+    function createSpeedSwitch(index) {
+        const switchContainer = $('<div class="speed-switch-container"></div>').css({
+            width: '40px',
+            height: '30px',
+            position: 'relative',
+            marginTop: '25px',
+            marginBottom: '15px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        });
+        
+        const speedSwitch = $('<div class="speed-switch"></div>').css({
+            width: '40px',
+            height: '20px',
+            border: '2px solid white',
+            borderRadius: '10px',
+            position: 'relative',
+            cursor: 'pointer',
+            transition: 'background-color 0.2s ease'
+        });
+        
+        const switchHandle = $('<div class="switch-handle"></div>').css({
+            width: '16px',
+            height: '16px',
+            background: 'white',
+            borderRadius: '50%',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            transition: 'left 0.2s ease'
+        });
+        
+        const speedLabel = $('<div class="speed-label">½</div>').css({
+            color: 'white',
+            fontSize: '14px',
+            position: 'absolute',
+            bottom: '-20px',
+            width: '100%',
+            textAlign: 'center'
+        });
+        
+        speedSwitch.append(switchHandle);
+        switchContainer.append(speedSwitch, speedLabel);
+        
+        // Track switch state
+        speedSwitch.data('active', false);
+        
+        // Click handler for the switch
+        speedSwitch.on('click', function() {
+            const isActive = !$(this).data('active');
+            $(this).data('active', isActive);
+            
+            if (isActive) {
+                $(this).css('backgroundColor', 'rgba(255, 255, 255, 0.3)');
+                switchHandle.css('left', '20px');
+                // Set half speed
+                updateLoopSpeed(index, true);
+            } else {
+                $(this).css('backgroundColor', 'transparent');
+                switchHandle.css('left', '0');
+                // Set normal speed
+                updateLoopSpeed(index, false);
+            }
+            
+            // Adjust rotation speed if reel is playing
+            const reel = $(this).closest('.slider-unit').find('.reel');
+            if (reel.data('playing')) {
+                // Restart animation with new speed
+                stopReelAnimation(reel);
+                startReelAnimation(reel, index);
+            }
+        });
+        
+        return switchContainer;
+    }
 
     // Function to create volume sliders
     function createVolumeSliders() {
@@ -96,7 +174,7 @@ $(document).ready(function() {
             padding: '10px'
         });
 
-        // Create 4 slider units (reel + slider)
+        // Create 4 slider units (reel + slider + switch)
         for (let i = 0; i < 4; i++) {
             const sliderUnit = $('<div class="slider-unit"></div>').css({
                 display: 'flex',
@@ -106,8 +184,9 @@ $(document).ready(function() {
 
             const reel = createReel(i);
             const slider = createSlider(i);
+            const speedSwitch = createSpeedSwitch(i);
             
-            sliderUnit.append(reel, slider);
+            sliderUnit.append(reel, slider, speedSwitch);
             sliderContainer.append(sliderUnit);
         }
 
@@ -165,9 +244,14 @@ $(document).ready(function() {
     function startReelAnimation(reel, index) {
         if (reel.data('animationId')) return;
 
+        // Check if half speed mode is active
+        const speedSwitch = reel.closest('.slider-unit').find('.speed-switch');
+        const isHalfSpeed = speedSwitch.data('active');
+        const rotationSpeed = isHalfSpeed ? 1 : 2; // Adjust rotation speed based on switch state
+
         function animate() {
             let rotation = reel.data('rotation') || 0;
-            rotation += 2;
+            rotation += rotationSpeed; // Use the dynamic rotation speed
             reel.data('rotation', rotation);
             
             reel.find('.spoke').css('transform', 
