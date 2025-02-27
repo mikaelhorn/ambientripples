@@ -295,8 +295,11 @@ $(document).ready(function() {
             reel.find('.spoke').css('transform', 
                 `translate(-50%, -50%) rotate(${rotation}deg)`);
 
-            // Create subtle ripple effect
-            if (rotation % 90 === 0) { // Changed from 30 to 90 to make ripples less frequent
+            // Create ripple effect based on rotation
+            // Use modulo to control frequency of ripples
+            // Using less frequent ripples for slow speed to avoid overwhelming effects
+            const rippleFreq = isHalfSpeed ? 180 : 90;
+            if (rotation % rippleFreq === 0) {
                 const reelOffset = reel.offset();
                 const centerX = reelOffset.left + reel.width() / 2;
                 const centerY = reelOffset.top + reel.height() / 2;
@@ -305,7 +308,12 @@ $(document).ready(function() {
                 const rippleX = centerX - containerOffset.left;
                 const rippleY = centerY - containerOffset.top;
                 
-                $('#container').ripples('drop', rippleX, rippleY, 15, 0.008); // Reduced perturbance from 0.015 to 0.008
+                // Create ripple effect with intensity based on speed
+                const intensity = isHalfSpeed ? 0.005 : 0.008;
+                $('#container').ripples('drop', rippleX, rippleY, 15, intensity);
+                
+                // Debug logging to confirm ripples are being created
+                console.log(`Creating ripple at rotation ${rotation} for reel ${index}`);
             }
 
             const animationId = requestAnimationFrame(animate);
