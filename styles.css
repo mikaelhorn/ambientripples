@@ -55,10 +55,19 @@ body {
 .slider {
     /* background: rgba(0, 0, 0, 0.5); */
     /* box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    touch-action: none; /* Prevent browser handling of touch events */
 }
 
 .slider-handle {
     /* box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); */
+    touch-action: none;
+}
+
+/* Add styling for active touch state */
+.slider-handle.dragging {
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
 }
 
 /* Update slider unit styling */
@@ -85,11 +94,13 @@ canvas {
 .speed-switch-container {
     text-align: center;
     margin-bottom: 10px;
+    touch-action: none;
 }
 
 .speed-switch {
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
     transition: all 0.2s ease;
+    touch-action: none;
 }
 
 .speed-switch:hover {
@@ -103,4 +114,25 @@ canvas {
 .speed-label {
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
     font-weight: bold;
+}
+
+/* Add larger touch targets for mobile */
+@media (max-width: 768px) {
+    .slider-handle {
+        height: 24px; /* Increase handle size on touch devices */
+    }
+    
+    .speed-switch {
+        height: 24px; /* Larger switch for touch */
+    }
+    
+    .switch-handle {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .reel {
+        width: 44px;
+        height: 44px;
+    }
 }

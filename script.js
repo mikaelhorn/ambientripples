@@ -218,26 +218,64 @@ $(document).ready(function() {
 
         slider.append(handle);
 
-        // Make handle draggable
+        // Make handle draggable for mouse events
         handle.draggable({
             axis: 'y',
             containment: 'parent',
             drag: function(event, ui) {
                 ui.position.left = 0;
-                
-                const sliderHeight = slider.height() - handle.height();
-                const normalizedPosition = Math.max(0, Math.min(sliderHeight, ui.position.top));
-                const volume = 1 - (normalizedPosition / sliderHeight);
-                
-                // Only update volume if the reel is playing
-                const reel = $(this).closest('.slider-unit').find('.reel');
-                if (reel.data('playing')) {
-                    updateLoopVolume(index, volume);
-                }
+                updateSliderVolume($(this), index);
             }
         });
 
+        // Add touch event support
+        handle.on('touchstart', function(e) {
+            e.preventDefault();
+            $(this).addClass('dragging');
+        });
+
+        handle.on('touchmove', function(e) {
+            e.preventDefault();
+            if ($(this).hasClass('dragging')) {
+                const touch = e.originalEvent.touches[0];
+                const sliderOffset = slider.offset();
+                const handleHeight = handle.height();
+                const sliderHeight = slider.height() - handleHeight;
+                
+                // Calculate new position based on touch point
+                let newTop = touch.pageY - sliderOffset.top - (handleHeight / 2);
+                
+                // Constrain within slider
+                newTop = Math.max(0, Math.min(sliderHeight, newTop));
+                
+                // Update handle position
+                handle.css('top', newTop + 'px');
+                
+                // Update volume
+                updateSliderVolume($(this), index);
+            }
+        });
+
+        handle.on('touchend touchcancel', function(e) {
+            e.preventDefault();
+            $(this).removeClass('dragging');
+        });
+
         return slider;
+    }
+
+    // Helper function to update volume based on slider position
+    function updateSliderVolume(handle, index) {
+        const slider = handle.closest('.slider');
+        const sliderHeight = slider.height() - handle.height();
+        const normalizedPosition = handle.position().top;
+        const volume = 1 - (normalizedPosition / sliderHeight);
+        
+        // Only update volume if the reel is playing
+        const reel = handle.closest('.slider-unit').find('.reel');
+        if (reel.data('playing')) {
+            updateLoopVolume(index, volume);
+        }
     }
 
     // Reel animation functions
@@ -313,5 +351,17 @@ $(document).ready(function() {
                 perturbance: 0.02
             });
         }, 100);
+    });
+
+    // Add touch support for the speed switches
+    $(document).on('touchstart', '.speed-switch', function(e) {
+        e.preventDefault();
+        $(this).trigger('click');
+    });
+
+    // Add touch support for the reels
+    $(document).on('touchstart', '.reel', function(e) {
+        e.preventDefault();
+        $(this).trigger('click');
     });
 });
